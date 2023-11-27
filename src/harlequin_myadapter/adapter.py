@@ -1,6 +1,7 @@
 from __future__ import annotations
 
 from typing import Any, Sequence
+
 from harlequin.adapter import HarlequinAdapter, HarlequinConnection, HarlequinCursor
 from harlequin.catalog import Catalog, CatalogItem
 from harlequin.exception import HarlequinConnectionError, HarlequinQueryError
@@ -21,10 +22,11 @@ class MyCursor(HarlequinCursor):
 
     def set_limit(self, limit: int) -> MyCursor:
         self._limit = limit
+        return self
 
     def fetchall(self) -> AutoBackendType:
         try:
-            if self._limit is not None:
+            if self._limit is None:
                 return self.cur.fetchall()
             else:
                 return self.cur.fetchmany(self._limit)
@@ -32,19 +34,20 @@ class MyCursor(HarlequinCursor):
             raise HarlequinQueryError(
                 msg=str(e),
                 title="Harlequin encountered an error while executing your query.",
-            )
+            ) from e
 
 
 class MyConnection(HarlequinConnection):
     def __init__(
         self, conn_str: Sequence[str], *args: Any, init_message: str = "", **kwargs: Any
     ) -> None:
+        self.init_message = init_message
         try:
             self.conn = "your database library's connect method goes here"
         except Exception as e:
             raise HarlequinConnectionError(
                 msg=str(e), title="Harlequin could not connect to your database."
-            )
+            ) from e
 
     def execute(self, query: str) -> HarlequinCursor | None:
         try:
@@ -53,7 +56,7 @@ class MyConnection(HarlequinConnection):
             raise HarlequinQueryError(
                 msg=str(e),
                 title="Harlequin encountered an error while executing your query.",
-            )
+            ) from e
         else:
             if cur is not None:
                 return MyCursor(cur)

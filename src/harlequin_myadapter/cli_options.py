@@ -1,10 +1,10 @@
 from harlequin.options import (
+    FlagOption,  # noqa
+    ListOption,  # noqa
+    PathOption,  # noqa
+    SelectOption,  # noqa
     TextOption,
-    SelectOption, # noqa
-    FlagOption, # noqa
-    ListOption, # noqa
-    PathOption, # noqa
-)  
+)
 
 foo = TextOption(
     name="foo",
