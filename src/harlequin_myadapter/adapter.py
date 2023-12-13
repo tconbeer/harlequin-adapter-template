@@ -2,7 +2,12 @@ from __future__ import annotations
 
 from typing import Any, Sequence
 
-from harlequin.adapter import HarlequinAdapter, HarlequinConnection, HarlequinCursor
+from harlequin import (
+    HarlequinAdapter,
+    HarlequinConnection,
+    HarlequinCursor,
+)
+from harlequin.autocomplete.completion import HarlequinCompletion
 from harlequin.catalog import Catalog, CatalogItem
 from harlequin.exception import HarlequinConnectionError, HarlequinQueryError
 from textual_fastdatatable.backend import AutoBackendType
@@ -111,6 +116,15 @@ class MyConnection(HarlequinConnection):
                 )
             )
         return Catalog(items=db_items)
+
+    def get_completions(self) -> list[HarlequinCompletion]:
+        extra_keywords = ["foo", "bar", "baz"]
+        return [
+            HarlequinCompletion(
+                label=item, type_label="kw", value=item, priority=1000, context=None
+            )
+            for item in extra_keywords
+        ]
 
 
 class MyAdapter(HarlequinAdapter):
