@@ -1,5 +1,5 @@
 [tool.poetry]
-name = "harlequin_myadapter"
+name = "harlequin-myadapter"
 version = "0.1.0"
 description = "A Harlequin adapter for <my favorite database>."
 authors = ["Ted Conbeer <tconbeer@users.noreply.github.com>"]
